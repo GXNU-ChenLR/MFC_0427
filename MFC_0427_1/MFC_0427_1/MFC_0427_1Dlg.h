@@ -39,4 +39,11 @@ protected:
 public:
 	afx_msg void OnLbnSelchangeList1();
 	CListBox Lbox;
+	CString s;
+	CString ss;
+	bool flag;
+	int n;
+	CString nname;//保存读取的所有姓名字串
+	afx_msg void OnBnClickedButton1();
+//	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };

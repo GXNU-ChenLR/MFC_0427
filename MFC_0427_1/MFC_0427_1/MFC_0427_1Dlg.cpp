@@ -6,6 +6,10 @@
 #include "MFC_0427_1.h"
 #include "MFC_0427_1Dlg.h"
 #include "afxdialogex.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -51,6 +55,7 @@ END_MESSAGE_MAP()
 
 CMFC_0427_1Dlg::CMFC_0427_1Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_MFC_0427_1_DIALOG, pParent)
+	, ss(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -59,6 +64,7 @@ void CMFC_0427_1Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, Lbox);
+	DDX_Text(pDX, IDC_EDIT1, ss);
 }
 
 BEGIN_MESSAGE_MAP(CMFC_0427_1Dlg, CDialogEx)
@@ -66,6 +72,8 @@ BEGIN_MESSAGE_MAP(CMFC_0427_1Dlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_LBN_SELCHANGE(IDC_LIST1, &CMFC_0427_1Dlg::OnLbnSelchangeList1)
+	ON_BN_CLICKED(IDC_BUTTON1, &CMFC_0427_1Dlg::OnBnClickedButton1)
+//	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -101,9 +109,24 @@ BOOL CMFC_0427_1Dlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-	CString s = _T("abcc");
-	Lbox.AddString(s);
-	Lbox.AddString(_T("abcd"));
+
+	string sss;//读取文件字符串保存到sss中
+	CString name;//保存读取的姓名字串
+	ifstream ifs(_T("C:\\Users\\Bug\\Desktop\\学生名单.txt"));  // 打开文件
+	CClientDC dc(this);
+	int x = 20, y = 10;
+	while(ifs >> sss)
+	{
+		name = CString(sss.c_str());
+		Lbox.AddString(name);
+		//nname.Append(name);
+		//nname += _T("\n");
+		y += 30;
+	}
+	ifs.close();
+
+	//Lbox.AddString(_T("abcd"));//测试是否成功添加姓名字串到列表框
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -161,4 +184,29 @@ HCURSOR CMFC_0427_1Dlg::OnQueryDragIcon()
 void CMFC_0427_1Dlg::OnLbnSelchangeList1()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	n = Lbox.GetCurSel();
+	Lbox.GetText(n, s);
+	CString s1 = s;
+	this->UpdateData(true);
+	ss = s1;
+	UpdateData(false);
+}
+
+
+void CMFC_0427_1Dlg::OnBnClickedButton1()
+{//修改学生姓名
+	// TODO: 在此添加控件通知处理程序代码
+		this->UpdateData(true);
+		CString s2 = ss;
+		Lbox.DeleteString(n);
+		Lbox.InsertString(n, s2);
+		UpdateData(false);
+		
+		ofstream ofs(_T("C:\\Users\\Bug\\Desktop\\学生名单.txt"));//打开文件
+		for (int j = 0; j < Lbox.GetCount(); j++)
+		{
+			Lbox.GetText(j, nname);
+			ofs << CT2A(nname) << endl;
+		}
+		ofs.close();
 }
