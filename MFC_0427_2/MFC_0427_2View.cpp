@@ -33,6 +33,7 @@ CMFC_0427_2View::CMFC_0427_2View()
 {
 	// TODO: 在此处添加构造代码
 	flag = false;
+	//crect.SetRect(0, 0, 0, 0);
 }
 
 CMFC_0427_2View::~CMFC_0427_2View()
@@ -57,6 +58,11 @@ void CMFC_0427_2View::OnDraw(CDC* pDC)
 		return;
 	
 	pDC->Ellipse(crect);
+	for (int i = 0; i < pDoc->cr.GetCount(); i++)
+	{
+		pDC->Ellipse(pDoc->cr[i]);
+	}
+	
 	// TODO: 在此处为本机数据添加绘制代码
 }
 
@@ -101,8 +107,8 @@ void CMFC_0427_2View::OnMouseMove(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	crect.right = point.x;
 	crect.bottom = point.y;
-	if(flag)
-	Invalidate();
+	if (flag)
+    Invalidate();
 	CView::OnMouseMove(nFlags, point);
 }
 
@@ -118,7 +124,7 @@ void CMFC_0427_2View::OnLButtonUp(UINT nFlags, CPoint point)
 
 	ReleaseCapture();
 	flag = false;
-
+	//Invalidate();
 	pDoc->cr.Add(crect);
 	CView::OnLButtonUp(nFlags, point);
 }
